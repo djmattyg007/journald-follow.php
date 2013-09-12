@@ -1,7 +1,14 @@
 <?php
 
+/* Iterator extends Traversable {
+	mixed   current()
+	scalar  key()
+	void    next()
+	void    rewind()
+	boolean valid()
+} */
+
 class Journal implements Iterator {
-#lass Journal {
 	private $filter;
 	private $startpos;
 	private $proc;
@@ -65,8 +72,7 @@ class Journal implements Iterator {
 	}
 
 	function rewind() {
-		//$this->_open_journal();
-		return;
+		return $this->seek($this->startpos);
 	}
 
 	function current() {
