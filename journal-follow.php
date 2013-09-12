@@ -1,11 +1,11 @@
 <?php
 
 /* Iterator extends Traversable {
-	mixed   current()
-	scalar  key()
-	void    next()
 	void    rewind()
 	boolean valid()
+	void    next()
+	mixed   current()
+	scalar  key()
 }
 calls:	rewind, valid==true, current, key
 	next, valid==true, current, key
@@ -80,18 +80,6 @@ class Journal implements Iterator {
 		$this->seek($this->startpos);
 	}
 
-	function current() {
-		if (!$this->entry)
-			$this->next();
-		return $this->entry;
-	}
-
-	function key() {
-		if (!$this->entry)
-			$this->next();
-		return $this->cursor;
-	}
-
 	function next() {
 		$line = fgets($this->stdout);
 		if ($line === false)
@@ -103,6 +91,18 @@ class Journal implements Iterator {
 
 	function valid() {
 		return true;
+	}
+
+	function current() {
+		if (!$this->entry)
+			$this->next();
+		return $this->entry;
+	}
+
+	function key() {
+		if (!$this->entry)
+			$this->next();
+		return $this->cursor;
 	}
 }
 
