@@ -25,7 +25,8 @@ class Journal implements Iterator {
 	}
 
 	function __construct($filter=[], $cursor=null) {
-		$this->_open_journal($filter, $cursor);
+		$this->filter = $filter;
+		$this->startpos = $cursor;
 	}
 
 	function _close_journal() {
