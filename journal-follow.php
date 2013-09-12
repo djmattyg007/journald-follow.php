@@ -18,7 +18,6 @@ class Journal implements Iterator {
 	private $proc;
 	private $stdout;
 	private $entry;
-	private $cursor;
 
 	static function _join_argv($argv) {
 		return implode(" ",
@@ -42,7 +41,6 @@ class Journal implements Iterator {
 			$this->proc = null;
 		}
 		$this->entry = null;
-		$this->cursor = null;
 	}
 
 	function _open_journal($filter=[], $cursor=null) {
@@ -85,7 +83,6 @@ class Journal implements Iterator {
 		if ($line === false)
 			return null;
 		$this->entry = json_decode($line);
-		$this->cursor = $this->entry->__CURSOR;
 		/* callers retrieve the entry using current() */
 	}
 
@@ -102,7 +99,7 @@ class Journal implements Iterator {
 	function key() {
 		if (!$this->entry)
 			$this->next();
-		return $this->cursor;
+		return $this->entry->__CURSOR;
 	}
 }
 
