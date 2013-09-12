@@ -6,7 +6,11 @@
 	void    next()
 	void    rewind()
 	boolean valid()
-} */
+}
+calls:	rewind, valid==true, current, key
+	next, valid==true, current, key
+	next, valid==false
+*/
 
 class Journal implements Iterator {
 	private $filter;
@@ -15,7 +19,6 @@ class Journal implements Iterator {
 	private $stdout;
 	private $entry;
 	private $cursor;
-	private $rewound;
 
 	static function _join_argv($argv) {
 		return implode(" ",
