@@ -15,6 +15,7 @@ class Journal implements Iterator {
 	private $stdout;
 	private $entry;
 	private $cursor;
+	private $rewound;
 
 	static function _join_argv($argv) {
 		return implode(" ",
@@ -65,14 +66,17 @@ class Journal implements Iterator {
 		if (!$this->proc)
 			return false;
 		$this->stdout = $fds[1];
+
+		/* current() must return the first entry after rewinding */
+		$this->next();
 	}
 
 	function seek($cursor) {
-		return $this->_open_journal($this->filter, $cursor);
+		$this->_open_journal($this->filter, $cursor);
 	}
 
 	function rewind() {
-		return $this->seek($this->startpos);
+		$this->seek($this->startpos);
 	}
 
 	function current() {
@@ -89,7 +93,7 @@ class Journal implements Iterator {
 			return null;
 		$this->entry = json_decode($line);
 		$this->cursor = $this->entry->__CURSOR;
-		return $this->entry;
+		/* callers retrieve the entry using current() */
 	}
 
 	function valid() {
@@ -100,6 +104,9 @@ class Journal implements Iterator {
 $a = new Journal();
 
 foreach ($a as $cursor => $item) {
+	echo "================\n";
 	var_dump($cursor);
-	print_r($item);
+	//print_r($item);
+	if ($item)
+		var_dump($item->MESSAGE);
 }
