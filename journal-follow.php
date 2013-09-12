@@ -70,9 +70,6 @@ class Journal implements Iterator {
 		if (!$this->proc)
 			return false;
 		$this->stdout = $fds[1];
-
-		/* current() must return the first entry after rewinding */
-		$this->next();
 	}
 
 	function seek($cursor) {
@@ -84,10 +81,14 @@ class Journal implements Iterator {
 	}
 
 	function current() {
+		if (!$this->entry)
+			$this->next();
 		return $this->entry;
 	}
 
 	function key() {
+		if (!$this->entry)
+			$this->next();
 		return $this->cursor;
 	}
 
