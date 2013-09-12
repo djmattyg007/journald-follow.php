@@ -2,6 +2,8 @@
 
 class Journal implements Iterator {
 #lass Journal {
+	private $filter;
+	private $startpos;
 	private $proc;
 	private $stdout;
 	private $entry;
@@ -14,8 +16,8 @@ class Journal implements Iterator {
 			}, $argv));
 	}
 
-	function __construct($filter=[]) {
-		$this->_open_journal($filter);
+	function __construct($filter=[], $cursor=null) {
+		$this->_open_journal($filter, $cursor);
 	}
 
 	function _close_journal() {
@@ -31,30 +33,39 @@ class Journal implements Iterator {
 		$this->cursor = null;
 	}
 
-	function _open_journal($filter=[]) {
+	function _open_journal($filter=[], $cursor=null) {
 		if ($this->proc)
 			$this->_close_journal();
-		$cmd = array_merge(["journalctl", "-f", "-ojson"], $filter);
+
+		$this->filter = $filter;
+		$this->startpos = $cursor;
+
+		$cmd = ["journalctl", "-f", "-o", "json"];
+		if ($cursor) {
+			$cmd[] = "-c";
+			$cmd[] = $cursor;
+		}
+		$cmd = array_merge($cmd, $filter);
 		$cmd = self::_join_argv($cmd);
+
 		$fdspec = [
 			0 => ["file", "/dev/null", "r"],
 			1 => ["pipe", "w"],
 			2 => ["file", "/dev/null", "w"],
 		];
+
 		$this->proc = proc_open($cmd, $fdspec, $fds);
 		if (!$this->proc)
 			return false;
 		$this->stdout = $fds[1];
 	}
 
-	function follow() {
-		while (($line = fgets($this->stdout)) !== false) {
-			$dict = json_decode($line);
-			print_r($dict);
-		}
+	function seek($cursor) {
+		return $this->_open_journal($this->filter, $cursor);
 	}
 
 	function rewind() {
+		//$this->_open_journal();
 		return;
 	}
 
