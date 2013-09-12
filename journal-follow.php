@@ -81,13 +81,14 @@ class Journal implements Iterator {
 	function next() {
 		$line = fgets($this->stdout);
 		if ($line === false)
-			return null;
-		$this->entry = json_decode($line);
-		/* callers retrieve the entry using current() */
+			$this->entry = false;
+		else
+			$this->entry = json_decode($line);
 	}
 
 	function valid() {
-		return true;
+		return ($this->entry !== false);
+		/* null is valid, it just means next() hasn't been called yet */
 	}
 
 	function current() {
