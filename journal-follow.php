@@ -1,4 +1,7 @@
 <?php
+/* © 2013 Mantas Mikulėnas <grawity@gmail.com>
+ * Released under WTFPL v2 <http://sam.zoy.org/wtfpl/>
+ */
 
 /* Iterator extends Traversable {
 	void    rewind()
