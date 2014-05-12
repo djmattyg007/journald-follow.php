@@ -111,14 +111,3 @@ class Journal implements Iterator
     }
 }
 
-$a = new Journal();
-
-foreach ($a as $cursor => $item) {
-    echo "================\n";
-    var_dump($cursor);
-    //print_r($item);
-    if ($item) {
-        var_dump($item->MESSAGE);
-    }
-}
-
